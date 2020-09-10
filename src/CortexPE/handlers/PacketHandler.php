@@ -43,7 +43,7 @@ use pocketmine\event\{
 	Listener, server\DataPacketReceiveEvent, server\DataPacketSendEvent
 };
 use pocketmine\network\mcpe\protocol\{
-	PlayerActionPacket, StartGamePacket
+	PlayerActionPacket, SetSpawnPositionPacket
 };
 use pocketmine\Player as PMPlayer;
 use pocketmine\plugin\Plugin;
@@ -145,7 +145,7 @@ class PacketHandler implements Listener {
 		$pk = $ev->getPacket();
 		$p = $ev->getPlayer();
 		switch(true){
-			case ($pk instanceof StartGamePacket):
+			case ($pk instanceof SetSpawnPositionPacket):
 				if(Main::$registerDimensions){
 					$pk->dimension = Utils::getDimension($p->getLevel());
 				}

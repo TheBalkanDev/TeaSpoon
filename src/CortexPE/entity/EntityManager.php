@@ -84,7 +84,7 @@ use CortexPE\entity\object\{
 	AreaEffectCloud, ArmorStand, EndCrystal, Lightning
 };
 use CortexPE\entity\projectile\{
-	Arrow, FireworkRocket, FishingHook, LingeringPotion, ThrownTrident
+	Arrow, FireworksRocket, FishingHook, LingeringPotion, ThrownTrident
 };
 use CortexPE\entity\vehicle\Boat;
 use CortexPE\entity\vehicle\BrokenMinecart;
@@ -146,7 +146,9 @@ class EntityManager extends Entity {
 		self::registerEntity(LingeringPotion::class, true, ['LingeringPotion', 'minecraft:lingeringpotion']);
 		self::registerEntity(FishingHook::class, true, ['FishingHook', 'minecraft:fishinghook']);
 		self::registerEntity(Arrow::class, true, ['Arrow', 'minecraft:arrow']);
-		self::registerEntity(FireworkRocket::class, true, ['Firework', 'minecraft:firework']);
+		#self::registerEntity(FireworksRocket::class, true, ['Firework', 'minecraft:firework']);
+		#register firesworks in itemmanager
+		
 		self::registerEntity(ThrownTrident::class, true, ['Trident', 'minecraft:trident']);
 
 		// Other Entities ////

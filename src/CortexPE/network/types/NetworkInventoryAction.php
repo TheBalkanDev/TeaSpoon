@@ -37,8 +37,9 @@ use pocketmine\item\Item;
 use pocketmine\network\mcpe\protocol\types\ContainerIds;
 use pocketmine\Player;
 use UnexpectedValueException;
-
-class NetworkInventoryAction {
+use pocketmine\network\mcpe\protocol\types\NetworkInventoryAction as PMNetworkInventoryAction;
+use pocketmine\network\mcpe\NetworkBinaryStream;
+class NetworkInventoryAction extends PMNetworkInventoryAction{
 	public const SOURCE_CONTAINER = 0;
 
 	public const SOURCE_WORLD = 2; //drop/pickup item entity
@@ -103,7 +104,7 @@ class NetworkInventoryAction {
 	 *
 	 * @return $this
 	 */
-	public function read(InventoryTransactionPacket $packet){
+	public function read(NetworkBinaryStream $packet, bool $hasItemStackIds){
 		$this->sourceType = $packet->getUnsignedVarInt();
 
 		switch($this->sourceType){
@@ -131,7 +132,7 @@ class NetworkInventoryAction {
 	/**
 	 * @param InventoryTransactionPacket $packet
 	 */
-	public function write(InventoryTransactionPacket $packet){
+	public function write(NetworkBinaryStream $packet, bool $hasItemStackIds){
 		$packet->putUnsignedVarInt($this->sourceType);
 
 		switch($this->sourceType){

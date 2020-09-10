@@ -39,7 +39,8 @@ use CortexPE\Main;
 use pocketmine\item\{
 	Item, ItemFactory
 };
-
+use pocketmine\entity\Entity;
+use CortexPE\entity\projectile\FireworksRocket;
 class ItemManager {
 	public static function init(){
 		ItemFactory::registerItem(new Boat(), true);
@@ -76,7 +77,7 @@ class ItemManager {
 		//ItemFactory::registerItem(new Record(Item::RECORD_WARD, 0, "Music Disc ward"), true);
 		//ItemFactory::registerItem(new Record(Item::RECORD_11, 0, "Music Disc 11"), true);
 		//ItemFactory::registerItem(new Record(Item::RECORD_WAIT, 0, "Music Disc wait"), true);
-
 		Item::initCreativeItems();
+		Entity::registerEntity(FireworksRocket::class, false, ["FireworksRocket"]);
 	}
 }

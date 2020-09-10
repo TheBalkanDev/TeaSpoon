@@ -26,33 +26,43 @@ namespace CortexPE\network;
 use CortexPE\network\types\NetworkInventoryAction;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket as PMInventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\types\ContainerIds;
-
+use pocketmine\network\mcpe\protocol\types\inventory\InventoryTransactionChangedSlotsHack;
 class InventoryTransactionPacket extends PMInventoryTransactionPacket {
 
 	protected function decodePayload(): void{
+		$this->requestId = $this->readGenericTypeNetworkId();
+		$this->requestChangedSlots = [];
+		if($this->requestId !== 0){
+			for($i = 0, $len = $this->getUnsignedVarInt(); $i < $len; ++$i){
+				$this->requestChangedSlots[] = InventoryTransactionChangedSlotsHack::read($this);
+			}
+		}
+
 		$this->transactionType = $this->getUnsignedVarInt();
 
-		for($i = 0, $count = $this->getUnsignedVarInt(); $i < $count; ++$i){
-			$this->actions[] = $action = (new NetworkInventoryAction())->read($this);
+		$this->hasItemStackIds = $this->getBool();
 
-			if(
-				$action->sourceType === NetworkInventoryAction::SOURCE_CONTAINER and
-				$action->windowId === ContainerIds::UI and
-				$action->inventorySlot === 50 and
-				!$action->oldItem->equalsExact($action->newItem)
-			){
-				$this->isCraftingPart = true;
-				if(!$action->oldItem->isNull() and $action->newItem->isNull()){
-					$this->isFinalCraftingPart = true;
-				}
-			}elseif(
-				$action->sourceType === NetworkInventoryAction::SOURCE_TODO and (
-					$action->windowId === NetworkInventoryAction::SOURCE_TYPE_CRAFTING_RESULT or
-					$action->windowId === NetworkInventoryAction::SOURCE_TYPE_CRAFTING_USE_INGREDIENT
-				)
-			){
-				$this->isCraftingPart = true;
-			}
+		for($i = 0, $count = $this->getUnsignedVarInt(); $i < $count; ++$i){
+			$this->actions[] = $action = (new NetworkInventoryAction())->read($this,$this->hasItemStackIds);
+
+			// if(
+			// 	$action->sourceType === NetworkInventoryAction::SOURCE_CONTAINER and
+			// 	$action->windowId === ContainerIds::UI and
+			// 	$action->inventorySlot === 50 and
+			// 	!$action->oldItem->equalsExact($action->newItem)
+			// ){
+			// 	$this->isCraftingPart = true;
+			// 	if(!$action->oldItem->isNull() and $action->newItem->isNull()){
+			// 		$this->isFinalCraftingPart = true;
+			// 	}
+			// }elseif(
+			// 	$action->sourceType === NetworkInventoryAction::SOURCE_TODO and (
+			// 		$action->windowId === NetworkInventoryAction::SOURCE_TYPE_CRAFTING_RESULT or
+			// 		$action->windowId === NetworkInventoryAction::SOURCE_TYPE_CRAFTING_USE_INGREDIENT
+			// 	)
+			// ){
+			// 	$this->isCraftingPart = true;
+			// }
 		}
 
 		$this->trData = new \stdClass();
